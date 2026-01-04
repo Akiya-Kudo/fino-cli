@@ -14,10 +14,8 @@
     }
   },
   "python.pythonPath": ".venv/bin/python",
-  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.defaultInterpreterPath": "../../.venv/bin/python",
   "python.terminal.activateEnvironment": true,
-  // Jupyter 実行時のカレントディレクトリを固定
-  "jupyter.notebookFileRoot": "${workspaceFolder}",
 
   // ===============================
   // Editor Theme

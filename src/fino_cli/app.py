@@ -7,9 +7,7 @@ from fino_cli.util.theme import FinoColors
 
 console = Console()
 
-app = typer.Typer(
-    name="fino", invoke_without_command=True, no_args_is_help=False
-)
+app = typer.Typer(name="fino", invoke_without_command=True, no_args_is_help=False)
 
 app.add_typer(
     collector.app,

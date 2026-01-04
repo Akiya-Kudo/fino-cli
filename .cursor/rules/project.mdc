@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+
+# design.mdc - fino_cli –
+
+## Project Design Rules
+
+## Features
+
+### === Collector ===
+- データの収集・保管プロセスの自動化を行う。

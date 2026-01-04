@@ -18,3 +18,11 @@ packages = ["src/fino_cli"]
 
 [tool.hatch.build.targets.wheel.sources]
 "src/fino_cli" = "fino_cli"
+
+[dependency-groups]
+lint = ["ruff>=0.14.8"]
+test = ["pytest>=9.0.2", "moto[s3]>=5.0.0"]
+dev = [
+    { include-group = "lint" },
+    { include-group = "test" },
+]

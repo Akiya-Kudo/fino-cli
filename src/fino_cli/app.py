@@ -1,9 +1,8 @@
+import fino_cli.command.collector.app as collector
 import typer
+from fino_cli.util.theme import FinoColors
 from rich.console import Console
 from rich.panel import Panel
-
-import fino_cli.command.collector.app as collector
-from fino_cli.util.theme import FinoColors
 
 console = Console()
 

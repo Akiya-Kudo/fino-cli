@@ -1,68 +1,78 @@
-from enum import Enum
-
 import rich
 import typer
-from click.core import ParameterSource
 from fino_cli.config import settings
+from fino_cli.parameter.disclosure_source import (
+    DisclosureSourceParam,
+    DisclosureSourceParamEnum,
+    validate_disclosure_source,
+)
+from fino_cli.parameter.storage import (
+    StorageParam,
+    StorageParamEnum,
+    validate_storage,
+)
 from fino_cli.util.theme import FinoColors
 from fino_core import (
-    CollectDocumentInput,
-    PeriodInput,
-    StorageConfigInput,
-    StorageType,
-    collect_edinet,
+    DocumentCollector,
+    EdinetConfig,
+    LocalStorageConfig,
+    S3StorageConfig,
 )
-from typing_extensions import Annotated
 
 app = typer.Typer(no_args_is_help=True)
-
-
-class Target(str, Enum):
-    EDINET = "edinet"
-    TDNET = "tdnet"
 
 
 @app.command()
 def collector(
     ctx: typer.Context,
-    target: Annotated[
-        Target,
-        typer.Option(
-            "--target",
-            "-t",
-            case_sensitive=False,
-            help="Target system name to collect data",
-        ),
-    ] = "edinet",
-    edinet_api_key: Annotated[str, typer.Option()] = settings.get("EDINET__API_KEY", default=""),
+    # Disclosure source options
+    disclosure_source: DisclosureSourceParam.AnnotatedDisclosureSource = DisclosureSourceParamEnum.EDINET,
+    edinet_api_key: DisclosureSourceParam.AnnotatedEdinetApiKey = settings.get(
+        "EDINET__API_KEY", default=""
+    ),
+    # Storage options
+    storage: StorageParam.AnnotatedStorage = StorageParamEnum.LOCAL,
+    # Local storage options
+    local_path: StorageParam.AnnotatedLocalPath = settings.get(
+        "STORAGE__LOCAL__PATH", default="./fino-data"
+    ),
+    # S3 storage options
+    s3_bucket: StorageParam.AnnotatedS3Bucket = settings.get("STORAGE__S3__BUCKET", default=""),
+    s3_prefix: StorageParam.AnnotatedS3Prefix = settings.get("STORAGE__S3__PREFIX", default=""),
+    s3_region: StorageParam.AnnotatedS3Region = settings.get(
+        "STORAGE__S3__REGION", default="ap-northeast-1"
+    ),
 ) -> None:
     """
-    Collect data from the target system.
+    Collect data from the target disclosure source (EDINET).
     """
-    # paramter check
-    if ctx.get_parameter_source("target") == ParameterSource.DEFAULT:
+    # validation
+    validate_disclosure_source(ctx, disclosure_source, edinet_api_key)
+    validate_storage(ctx, storage, local_path, s3_bucket, s3_prefix, s3_region)
+
+    # Create storage config based on storage type
+    storage_config: LocalStorageConfig | S3StorageConfig
+    if storage == StorageParamEnum.LOCAL:
+        storage_config = LocalStorageConfig(path=local_path)
+        rich.print(f"[{FinoColors.GREEN3}]Storage: Local ({local_path})[/{FinoColors.GREEN3}]")
+    elif storage == StorageParamEnum.S3:
+        storage_config = S3StorageConfig(
+            bucket_name=s3_bucket,
+            prefix=s3_prefix if s3_prefix else None,
+            region=s3_region,
+        )
+        prefix_display = f" (prefix: {s3_prefix})" if s3_prefix else ""
         rich.print(
-            f"[{FinoColors.ORANGE3}]Since target option is not specified, data will be collected from the default Edinet[/{FinoColors.ORANGE3}]"
+            f"[{FinoColors.GREEN3}]Storage: S3 (bucket: {s3_bucket}, region: {s3_region}{prefix_display})[/{FinoColors.GREEN3}]"
         )
 
-    # parameter validation
-    if edinet_api_key == "":
-        raise typer.BadParameter(
-            "edinet api key is not set. please set in config file or environment variable."
-        )
+    # Create fino core collector
+    edinet_config = EdinetConfig(api_key=edinet_api_key)
+    collector = DocumentCollector(edinet_config=edinet_config, storage_config=storage_config)
 
-    # fino core collector
-    # TODO: Make these configurable via CLI options
-    input_data = CollectDocumentInput(
-        period=PeriodInput(year=2024, month=1, day=1),  # Default: today or make configurable
-        storage=StorageConfigInput(
-            type=StorageType.LOCAL,
-            path="./data",  # Default storage path
-        ),
-        doc_type=None,  # None means collect all document types
-        api_key=edinet_api_key,
+    rich.print(
+        f"[{FinoColors.BLUE3}]✓ DocumentCollector initialized successfully[/{FinoColors.BLUE3}]"
     )
-    collect_edinet(input_data)
 
 
 if __name__ == "__main__":

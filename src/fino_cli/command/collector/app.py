@@ -70,6 +70,8 @@ def collector(
     edinet_config = EdinetConfig(api_key=edinet_api_key)
     collector = DocumentCollector(edinet_config=edinet_config, storage_config=storage_config)
 
+    collector.
+
     rich.print(
         f"[{FinoColors.BLUE3}]✓ DocumentCollector initialized successfully[/{FinoColors.BLUE3}]"
     )

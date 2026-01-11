@@ -2,11 +2,12 @@ from typing import Annotated
 
 import typer
 
-type YearParam = Annotated[int, typer.Option(help="Year")]
-type MonthParam = Annotated[int | None, typer.Option(help="Month")]
-type DayParam = Annotated[int | None, typer.Option(help="Day")]
+YearParam = Annotated[int, typer.Option(help="Year")]
+MonthParam = Annotated[int | None, typer.Option(help="Month")]
+DayParam = Annotated[int | None, typer.Option(help="Day")]
 
 
+# validation
 def validate_timescope(
     month: int | None,
     day: int | None,

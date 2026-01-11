@@ -1,12 +1,18 @@
 import rich
 import typer
+from fino_cli.config import settings
 from fino_cli.parameter.disclosure_source import (
     DisclosureSourceParam,
+    DisclosureSourceParamEnum,
     EdinetApiKeyParam,
     validate_disclosure_source,
 )
 from fino_cli.parameter.format_type import FormatTypeParam
 from fino_cli.parameter.storage import (
+    LocalPathParam,
+    S3BucketParam,
+    S3PrefixParam,
+    S3RegionParam,
     StorageParam,
     StorageParamEnum,
     validate_storage,
@@ -19,6 +25,7 @@ from fino_cli.parameter.timescope import (
 )
 from fino_cli.util.theme import FinoColors
 from fino_core import (
+    Document,
     DocumentCollector,
     EdinetConfig,
     FormatTypeEnum,
@@ -27,32 +34,33 @@ from fino_core import (
     TimeScope,
 )
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer()
 
 
 @app.command()
 def collect(
     ctx: typer.Context,
-    # Disclosure source options
-    disclosure_source: DisclosureSourceParam,
-    edinet_api_key: EdinetApiKeyParam,
-    # Storage options
-    storage: StorageParam.AnnotatedStorage,
-    # Local storage options
-    local_path: StorageParam.AnnotatedLocalPath,
-    # S3 storage options
-    s3_bucket: StorageParam.AnnotatedS3Bucket,
-    s3_prefix: StorageParam.AnnotatedS3Prefix,
-    s3_region: StorageParam.AnnotatedS3Region,
     # Time scope options
     year: YearParam,
-    month: MonthParam,
-    day: DayParam,
+    # Disclosure source options
+    disclosure_source: DisclosureSourceParam = DisclosureSourceParamEnum.EDINET,
+    edinet_api_key: EdinetApiKeyParam = settings.edinet.api_key,
+    # Storage options
+    storage: StorageParam = StorageParamEnum.LOCAL,
+    # Local storage options
+    local_path: LocalPathParam = settings.storage.local_path,
+    # S3 storage options
+    s3_bucket: S3BucketParam = settings.storage.s3_bucket,
+    s3_prefix: S3PrefixParam = settings.storage.s3_prefix,
+    s3_region: S3RegionParam = settings.storage.s3_region,
+    # Time scope options
+    month: MonthParam = None,
+    day: DayParam = None,
     # Format type options
-    format_type: FormatTypeParam.AnnotatedFormatType = FormatTypeEnum.XBRL,
+    format_type: FormatTypeParam = FormatTypeEnum.XBRL,
 ) -> None:
     """
-    Collect data from the target disclosure source (EDINET).
+    Collect financial disclosure documents from the target disclosure source.
     """
     # validation
     validate_disclosure_source(ctx, disclosure_source, edinet_api_key)
@@ -88,11 +96,19 @@ def collect(
     # Create time scope
     timescope = TimeScope(year=year, month=month, day=day)
 
-    collector.collect_document(timescope=timescope, format_type=FormatTypeEnum.XBRL)
+    result = collector.collect_document(
+        timescope=timescope, format_type=FormatTypeEnum.XBRL
+    )
+
+    collected_document_list: list[Document] = result["collected_document_list"]
 
     rich.print(
-        f"[{FinoColors.BLUE3}]✓ DocumentCollector initialized successfully[/{FinoColors.BLUE3}]"
+        f"[{FinoColors.GOLD3}]✓ Collected {len(result)} documents[/{FinoColors.GOLD3}]"
     )
+    for document in collected_document_list:
+        rich.print(
+            f"{document.document_id}: {document.disclosure_date}, {document.filing_name}, {document.disclosure_type}"
+        )
 
 
 if __name__ == "__main__":

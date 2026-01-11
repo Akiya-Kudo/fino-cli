@@ -4,7 +4,6 @@ from typing import Annotated
 import rich
 import typer
 from click.core import ParameterSource
-from fino_cli.config import settings
 from fino_cli.util.theme import FinoColors
 
 
@@ -15,30 +14,23 @@ class StorageParamEnum(str, Enum):
 
 
 # param
-type StorageParam = Annotated[
+StorageParam = Annotated[
     StorageParamEnum,
-    typer.Option(StorageParamEnum.LOCAL, help="Storage backend type (local or s3)"),
+    typer.Option(help="Storage backend type (local or s3)"),
 ]
-type LocalPathParam = Annotated[
+LocalPathParam = Annotated[
     str,
-    typer.Option(
-        settings.storage.local_path, help="Base directory path for local storage"
-    ),
+    typer.Option(help="Base directory path for local storage"),
 ]
-type S3BucketParam = Annotated[
-    str, typer.Option(settings.storage.s3_bucket, help="S3 bucket name for s3 storage")
-]
-type S3PrefixParam = Annotated[
+S3BucketParam = Annotated[str, typer.Option(help="S3 bucket name for s3 storage")]
+S3PrefixParam = Annotated[
     str,
-    typer.Option(
-        settings.storage.s3_prefix, help="S3 prefix (folder path) for s3 storage"
-    ),
+    typer.Option(help="S3 prefix (folder path) for s3 storage"),
 ]
-type S3RegionParam = Annotated[
-    str, typer.Option(settings.storage.s3_region, help="S3 region for s3 storage")
-]
+S3RegionParam = Annotated[str, typer.Option(help="S3 region for s3 storage")]
 
 
+# validation
 def validate_storage(
     ctx: typer.Context,
     storage: StorageParamEnum,

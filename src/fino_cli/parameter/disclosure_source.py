@@ -4,7 +4,6 @@ from typing import Annotated
 import rich
 import typer
 from click.core import ParameterSource
-from fino_cli.config import settings
 from fino_cli.util.theme import FinoColors
 
 
@@ -14,14 +13,12 @@ class DisclosureSourceParamEnum(str, Enum):
 
 
 # param
-type DisclosureSourceParam = Annotated[
+DisclosureSourceParam = Annotated[
     DisclosureSourceParamEnum,
     typer.Option(help="Disclosure source to collect documents from"),
 ]
 
-type EdinetApiKeyParam = Annotated[
-    str, typer.Option(settings.edinet.api_key, help="API key for EDINET")
-]
+EdinetApiKeyParam = Annotated[str, typer.Option(help="API key for EDINET")]
 
 
 # validation

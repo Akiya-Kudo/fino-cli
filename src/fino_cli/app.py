@@ -55,24 +55,29 @@ def root(ctx: typer.Context):
     )
     fino_logo.stylize("brand.quaternary", logo_length * 3 // 4, logo_length)
 
+    # パネル内容を構築
+    panel_content = Text()
+    _ = panel_content.append("Fino CLI\n", style="brand.primary")
+    _ = panel_content.append("\tFino ", style="brand.secondary")
+    _ = panel_content.append(
+        "is a powerful financial data platform for supporting your investment decisions.\n\n"
+    )
+    _ = panel_content.append("Features:\n", style="brand.tertiary")
+    _ = panel_content.append("\t- raw data ingestion workflow.\n")
+    _ = panel_content.append("\t- data-lakehouse management.\n")
+
     console.print(
         fino_logo,
         Panel.fit(
-            f"""[bold {"brand.primary"}]Fino CLI[/bold {"brand.primary"}]
-            - Financial data management CLI tool -
-            [bold {"brand.secondary"}]Fino[/bold {"brand.secondary"}] is a powerful financial data platform for supporting your investment decisions.
-
-            [bold {"brand.tertiary"}]Features:[/bold {"brand.tertiary"}]
-            - raw data ingestion workflow.
-            - data-lakehouse management.
-
-            [{"brand.quaternary"}]***[/{"brand.quaternary"}] please check --help option what you can do with fino cli [{"brand.quaternary"}]***[/{"brand.quaternary"}]
-            """,
+            panel_content,
             border_style="panel.border",
             title="welcome",
             subtitle="Financial Data Management CLI Tool",
         ),
     )
+
+    # 標準のヘルプを表示
+    console.print(ctx.get_help())
 
     raise typer.Exit()
 

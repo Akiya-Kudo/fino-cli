@@ -4,7 +4,6 @@ from typing import Annotated
 import rich
 import typer
 from click.core import ParameterSource
-from fino_cli.util.theme import FinoColors
 
 
 # enum
@@ -29,7 +28,7 @@ def validate_disclosure_source(
 ) -> None:
     if ctx.get_parameter_source("disclosure_source") == ParameterSource.DEFAULT:
         rich.print(
-            f"[{FinoColors.ORANGE3}]Since no disclosure source option specified, collect documents from the default Edinet[/{FinoColors.ORANGE3}]"
+            f"[{'brand.secondary'}]Since no disclosure source option specified, collect documents from the default Edinet[/{'brand.secondary'}]"
         )
     if (
         edinet_api_key == DisclosureSourceParamEnum.EDINET

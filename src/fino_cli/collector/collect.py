@@ -23,7 +23,6 @@ from fino_cli.parameter.timescope import (
     YearParam,
     validate_timescope,
 )
-from fino_cli.util.theme import FinoColors
 from fino_core import (
     Document,
     DocumentCollector,
@@ -72,7 +71,7 @@ def collect(
     if storage == StorageParamEnum.LOCAL:
         storage_config = LocalStorageConfig(base_dir=local_path)
         rich.print(
-            f"[{FinoColors.MAGENTA3}]Storage: Local ({local_path})[/{FinoColors.MAGENTA3}]"
+            f"[{'brand.primary'}]Storage: Local ({local_path})[/{'brand.primary'}]"
         )
     elif storage == StorageParamEnum.S3:
         storage_config = S3StorageConfig(
@@ -82,7 +81,7 @@ def collect(
         )
         prefix_display = f" (prefix: {s3_prefix})" if s3_prefix else ""
         rich.print(
-            f"[{FinoColors.MAGENTA3}]Storage: S3 (bucket: {s3_bucket}, region: {s3_region}{prefix_display})[/{FinoColors.MAGENTA3}]"
+            f"[{'brand.primary'}]Storage: S3 (bucket: {s3_bucket}, region: {s3_region}{prefix_display})[/{'brand.primary'}]"
         )
 
     # Create fino core disclosure source
@@ -103,7 +102,7 @@ def collect(
     collected_document_list: list[Document] = result["collected_document_list"]
 
     rich.print(
-        f"[{FinoColors.GOLD3}]✓ Collected {len(result)} documents[/{FinoColors.GOLD3}]"
+        f"[{'brand.primary'}]✓ Collected {len(result)} documents[/{'brand.primary'}]"
     )
     for document in collected_document_list:
         rich.print(

@@ -4,7 +4,6 @@ from typing import Annotated
 import rich
 import typer
 from click.core import ParameterSource
-from fino_cli.util.theme import FinoColors
 
 
 # enum
@@ -41,7 +40,7 @@ def validate_storage(
 ) -> None:
     if ctx.get_parameter_source("storage") == ParameterSource.DEFAULT:
         rich.print(
-            f"[{FinoColors.MAGENTA3}]Using default storage: {storage.value}[/{FinoColors.MAGENTA3}]"
+            f"[{'brand.secondary'}]Using default storage: {storage.value}[/{'brand.secondary'}]"
         )
 
     if storage == StorageParamEnum.LOCAL:

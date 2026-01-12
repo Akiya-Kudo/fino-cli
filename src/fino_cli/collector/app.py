@@ -1,5 +1,5 @@
 import typer
-from fino_cli.command.collector import collect
+from fino_cli.collector import collect
 
 app = typer.Typer(no_args_is_help=True)
 

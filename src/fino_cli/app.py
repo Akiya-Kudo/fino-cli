@@ -56,40 +56,25 @@ def root(ctx: typer.Context):
     fino_logo.stylize("brand.quaternary", logo_length * 3 // 4, logo_length)
 
     console.print(
+        fino_logo,
         Panel.fit(
-            fino_logo,
+            f"""[bold {"brand.primary"}]Fino CLI[/bold {"brand.primary"}]
+            - Financial data management CLI tool -
+            [bold {"brand.secondary"}]Fino[/bold {"brand.secondary"}] is a powerful financial data platform for supporting your investment decisions.
+
+            [bold {"brand.tertiary"}]Features:[/bold {"brand.tertiary"}]
+            - raw data ingestion workflow.
+            - data-lakehouse management.
+
+            [{"brand.quaternary"}]***[/{"brand.quaternary"}] please check --help option what you can do with fino cli [{"brand.quaternary"}]***[/{"brand.quaternary"}]
+            """,
             border_style="panel.border",
             title="welcome",
             subtitle="Financial Data Management CLI Tool",
-        )
+        ),
     )
 
     raise typer.Exit()
-
-
-# @app.callback(invoke_without_command=True)
-# # def callback(ctx: typer.Context) -> None:
-# #     # コマンドが指定されている場合はパネルを表示しない
-# #     if ctx.invoked_subcommand is not None:
-# #         return
-
-# #     # コマンドなしで実行された場合のみオンボーディングパネルを表示
-# #     console.print(
-# #         Panel.fit(
-# #             f"""[bold {FinoColors.ORANGE3}]Fino CLI[/bold {FinoColors.ORANGE3}]
-# #             - Financial data management CLI tool -
-# #             [bold {FinoColors.LIGHT_SALMON3}]Fino[/bold {FinoColors.LIGHT_SALMON3}] is a powerful financial data platform for supporting your investment decisions.
-
-# #             [bold {FinoColors.DEEP_PINK3}]Features:[/bold {FinoColors.DEEP_PINK3}]
-# #             - raw data ingestion workflow.
-# #             - data-lakehouse management.
-
-# #             [{FinoColors.GOLD3}]***[/{FinoColors.GOLD3}] please check --help option what you can do with fino cli [{FinoColors.GOLD3}]***[/{FinoColors.GOLD3}]
-# #             """,
-# #             title="🚀 Welcome Fino CLI",
-# #             border_style=FinoColors.GOLD3,
-# #         )
-# #     )
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ _dynaconf_settings = Dynaconf(
     core_loaders=["TOML"],
     # If the specified Dynaconf enters in a GLOBAL MERGE mode and when loading new files or sources will not override but merge data structures by default.
     merge_enabled=True,
-    settings_files=["settings.toml", ".secrets.toml"],
+    settings_files=["finoconfig.toml", ".finosecrets.toml"],
     # When turned on, dynaconf will try to load the variables from a .env file.
     load_dotenv=True,
     # Flexibility to specify the path of the config files.

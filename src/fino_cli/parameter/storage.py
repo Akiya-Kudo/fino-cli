@@ -1,9 +1,9 @@
 from enum import Enum
 from typing import Annotated
 
-import rich
 import typer
 from click.core import ParameterSource
+from rich.console import Console
 
 
 # enum
@@ -32,6 +32,7 @@ S3RegionParam = Annotated[str, typer.Option(help="S3 region for s3 storage")]
 # validation
 def validate_storage(
     ctx: typer.Context,
+    console: Console,
     storage: StorageParamEnum,
     local_path: str,
     s3_bucket: str,
@@ -39,9 +40,7 @@ def validate_storage(
     s3_region: str,
 ) -> None:
     if ctx.get_parameter_source("storage") == ParameterSource.DEFAULT:
-        rich.print(
-            f"[{'brand.secondary'}]Using default storage: {storage.value}[/{'brand.secondary'}]"
-        )
+        console.print(f"[info]Using default storage: {storage.value}[info]")
 
     if storage == StorageParamEnum.LOCAL:
         if local_path == "":

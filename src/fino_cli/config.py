@@ -24,7 +24,7 @@ _dynaconf_settings = Dynaconf(
     core_loaders=["TOML"],
     # If the specified Dynaconf enters in a GLOBAL MERGE mode and when loading new files or sources will not override but merge data structures by default.
     merge_enabled=True,
-    settings_files=["settings.toml", ".secrets.toml"],
+    settings_files=["finoconfig.toml", ".finosecrets.toml"],
     # When turned on, dynaconf will try to load the variables from a .env file.
     load_dotenv=True,
     # Flexibility to specify the path of the config files.
@@ -32,7 +32,7 @@ _dynaconf_settings = Dynaconf(
 )
 
 
-def _get_str(key: str, default: str = "") -> str:
+def _get_str(key: str, default: str | None = None) -> str:
     """Dynaconfから文字列値を取得するヘルパー関数"""
     return cast(str, _dynaconf_settings.get(key, default=default))  # type: ignore[reportUnknownMemberType]
 
@@ -42,7 +42,7 @@ class EdinetSettings:
 
     @property
     def api_key(self) -> str:
-        return _get_str("EDINET__API_KEY", default="")
+        return _get_str("EDINET__API_KEY")
 
 
 class StorageSettings:
@@ -54,15 +54,15 @@ class StorageSettings:
 
     @property
     def s3_bucket(self) -> str:
-        return _get_str("STORAGE__S3__BUCKET", default="")
+        return _get_str("STORAGE__S3__BUCKET")
 
     @property
     def s3_prefix(self) -> str:
-        return _get_str("STORAGE__S3__PREFIX", default="")
+        return _get_str("STORAGE__S3__PREFIX")
 
     @property
     def s3_region(self) -> str:
-        return _get_str("STORAGE__S3__REGION", default="ap-northeast-1")
+        return _get_str("STORAGE__S3__REGION")
 
 
 class Settings:

@@ -23,6 +23,7 @@ from fino_cli.parameter.timescope import (
     YearParam,
     validate_timescope,
 )
+from fino_cli.util.theme import create_console
 from fino_core import (
     Document,
     DocumentCollector,
@@ -61,18 +62,19 @@ def collect(
     """
     Collect financial disclosure documents from the target disclosure source.
     """
+    # initialize console
+    console = create_console()
+
     # validation
-    validate_disclosure_source(ctx, disclosure_source, edinet_api_key)
-    validate_storage(ctx, storage, local_path, s3_bucket, s3_prefix, s3_region)
+    validate_disclosure_source(ctx, console, disclosure_source, edinet_api_key)
+    validate_storage(ctx, console, storage, local_path, s3_bucket, s3_prefix, s3_region)
     validate_timescope(month, day)
 
     # Create storage based on storage type
     storage_config: LocalStorageConfig | S3StorageConfig
     if storage == StorageParamEnum.LOCAL:
         storage_config = LocalStorageConfig(base_dir=local_path)
-        rich.print(
-            f"[{'brand.primary'}]Storage: Local ({local_path})[/{'brand.primary'}]"
-        )
+        console.print(f"[info]Storage: Local ({local_path})[info]")
     elif storage == StorageParamEnum.S3:
         storage_config = S3StorageConfig(
             bucket_name=s3_bucket,
@@ -80,8 +82,8 @@ def collect(
             region=s3_region,
         )
         prefix_display = f" (prefix: {s3_prefix})" if s3_prefix else ""
-        rich.print(
-            f"[{'brand.primary'}]Storage: S3 (bucket: {s3_bucket}, region: {s3_region}{prefix_display})[/{'brand.primary'}]"
+        console.print(
+            f"[info]Storage: S3 (bucket: {s3_bucket}, region: {s3_region}{prefix_display})[info]"
         )
 
     # Create fino core disclosure source

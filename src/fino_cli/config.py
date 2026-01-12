@@ -1,4 +1,5 @@
 import os
+from typing import Any, cast
 
 from dynaconf import Dynaconf
 
@@ -16,7 +17,7 @@ from dynaconf import Dynaconf
     - CLI 実行ディレクトリに依存するようにするためにはroot_pathにos.getcwd()を指定する。
 """
 
-settings = Dynaconf(
+_dynaconf_settings = Dynaconf(
     envvar_prefix="FINO",
     # The list of enabled loaders that dynaconf will use to load settings files,
     # if your application is using only YAML you can for example change it to ['YAML'] so dynaconf stops trying to load toml and other formats.
@@ -29,3 +30,51 @@ settings = Dynaconf(
     # Flexibility to specify the path of the config files.
     root_path=os.getenv("FINO_CONFIG_DIR", None),
 )
+
+
+def _get_str(key: str, default: str = "") -> str:
+    """Dynaconfから文字列値を取得するヘルパー関数"""
+    return cast(str, _dynaconf_settings.get(key, default=default))  # type: ignore[reportUnknownMemberType]
+
+
+class EdinetSettings:
+    """EDINET設定の型安全なラッパー"""
+
+    @property
+    def api_key(self) -> str:
+        return _get_str("EDINET__API_KEY", default="")
+
+
+class StorageSettings:
+    """Storage設定の型安全なラッパー"""
+
+    @property
+    def local_path(self) -> str:
+        return _get_str("STORAGE__LOCAL__PATH", default="./fino-data")
+
+    @property
+    def s3_bucket(self) -> str:
+        return _get_str("STORAGE__S3__BUCKET", default="")
+
+    @property
+    def s3_prefix(self) -> str:
+        return _get_str("STORAGE__S3__PREFIX", default="")
+
+    @property
+    def s3_region(self) -> str:
+        return _get_str("STORAGE__S3__REGION", default="ap-northeast-1")
+
+
+class Settings:
+    """アプリケーション設定の型安全なラッパー"""
+
+    def __init__(self) -> None:
+        self.edinet = EdinetSettings()
+        self.storage = StorageSettings()
+
+    def get(self, key: str, default: Any = None) -> Any:
+        """Dynaconf の get メソッドをラップ"""
+        return cast(Any, _dynaconf_settings.get(key, default=default))  # type: ignore[reportUnknownMemberType]
+
+
+settings = Settings()

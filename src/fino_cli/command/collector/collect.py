@@ -109,7 +109,3 @@ def collect(
         rich.print(
             f"{document.document_id}: {document.disclosure_date}, {document.filing_name}, {document.disclosure_type}"
         )
-
-
-if __name__ == "__main__":
-    app()

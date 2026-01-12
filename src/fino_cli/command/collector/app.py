@@ -5,7 +5,6 @@ app = typer.Typer(no_args_is_help=True)
 
 app.add_typer(
     collect.app,
-    name="collect",
     help="collect financial disclosure documents by compatible with disclosure source",
 )
 

@@ -63,6 +63,7 @@ def root(ctx: typer.Context):
         "is a powerful financial data platform for supporting your investment decisions.\n\n"
     )
     _ = panel_content.append("Features:\n", style="brand.tertiary")
+    _ = panel_content.append("\t- document collection from disclosure source.\n")
     _ = panel_content.append("\t- raw data ingestion workflow.\n")
     _ = panel_content.append("\t- data-lakehouse management.\n")
 

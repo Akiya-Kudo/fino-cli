@@ -1,5 +1,6 @@
 import typer
 from fino_cli.util.theme import create_console
+from rich.text import Text
 
 app = typer.Typer()
 
@@ -7,7 +8,13 @@ app = typer.Typer()
 @app.command()
 def test_color() -> None:
     console = create_console()
-    console.print("[{'brand.primary'}]Hello, World![/{'brand.primary'}]")
-    console.print("[{'brand.secondary'}]Hello, World![/{'brand.secondary'}]")
-    console.print("[{'brand.tertiary'}]Hello, World![/{'brand.tertiary'}]")
-    console.print("[{'brand.quaternary'}]Hello, World![/{'brand.quaternary'}]")
+    text = Text()
+    _ = text.append("Fino CLI\n", style="success")
+    _ = text.append("Fino CLI\n", style="warning")
+    _ = text.append("Fino CLI\n", style="info")
+    _ = text.append("Fino CLI\n", style="error")
+    _ = text.append("Hello, World!\n", style="brand.primary")
+    _ = text.append("Hello, World!\n", style="brand.secondary")
+    _ = text.append("Hello, World!\n", style="brand.tertiary")
+    _ = text.append("Hello, World!\n", style="brand.quaternary")
+    console.print(text)

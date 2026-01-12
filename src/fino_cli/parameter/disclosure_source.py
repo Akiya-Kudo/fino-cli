@@ -1,9 +1,9 @@
 from enum import Enum
 from typing import Annotated
 
-import rich
 import typer
 from click.core import ParameterSource
+from rich.console import Console
 
 
 # enum
@@ -23,17 +23,15 @@ EdinetApiKeyParam = Annotated[str, typer.Option(help="API key for EDINET")]
 # validation
 def validate_disclosure_source(
     ctx: typer.Context,
+    console: Console,
     disclosure_source: DisclosureSourceParamEnum,
     edinet_api_key: str,
 ) -> None:
     if ctx.get_parameter_source("disclosure_source") == ParameterSource.DEFAULT:
-        rich.print(
-            f"[{'brand.secondary'}]Since no disclosure source option specified, collect documents from the default Edinet[/{'brand.secondary'}]"
+        console.print(
+            f"[info]Using default disclosure source: {disclosure_source.value}[info]"
         )
-    if (
-        edinet_api_key == DisclosureSourceParamEnum.EDINET
-        or ctx.get_parameter_source("edinet_api_key") == ParameterSource.DEFAULT
-    ):
+    if disclosure_source == DisclosureSourceParamEnum.EDINET and not edinet_api_key:
         raise typer.BadParameter(
-            "EDINET API key is required when disclosure source is EDINET"
+            "EDINET API key is required when collect documents from EDINET"
         )

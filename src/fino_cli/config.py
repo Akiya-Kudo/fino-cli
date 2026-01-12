@@ -32,7 +32,7 @@ _dynaconf_settings = Dynaconf(
 )
 
 
-def _get_str(key: str, default: str = "") -> str:
+def _get_str(key: str, default: str | None = None) -> str:
     """Dynaconfから文字列値を取得するヘルパー関数"""
     return cast(str, _dynaconf_settings.get(key, default=default))  # type: ignore[reportUnknownMemberType]
 
@@ -42,7 +42,7 @@ class EdinetSettings:
 
     @property
     def api_key(self) -> str:
-        return _get_str("EDINET__API_KEY", default="")
+        return _get_str("EDINET__API_KEY")
 
 
 class StorageSettings:
@@ -54,15 +54,15 @@ class StorageSettings:
 
     @property
     def s3_bucket(self) -> str:
-        return _get_str("STORAGE__S3__BUCKET", default="")
+        return _get_str("STORAGE__S3__BUCKET")
 
     @property
     def s3_prefix(self) -> str:
-        return _get_str("STORAGE__S3__PREFIX", default="")
+        return _get_str("STORAGE__S3__PREFIX")
 
     @property
     def s3_region(self) -> str:
-        return _get_str("STORAGE__S3__REGION", default="ap-northeast-1")
+        return _get_str("STORAGE__S3__REGION")
 
 
 class Settings:
